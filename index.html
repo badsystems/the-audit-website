@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Audit — A Space for Women</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:      #080808;
+    --pink-bg:    #2a0e1a;   /* deep rich pink-black for "pink" sections */
+    --pink-light: #f0b8cc;
+    --pink:       #e896b4;
+    --pink-deep:  #c96b94;
+    --pink-muted: #9b4d6e;
+    --white:      #faf8f6;
+    --nav-h: 70px;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ──────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--nav-h);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 clamp(1.25rem, 5vw, 4rem);
+    background: rgba(8,8,8,0.97);
+    border-bottom: 1px solid rgba(240,184,204,0.12);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1.5rem;
+    color: var(--pink-light); letter-spacing: 0.04em; text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: rgba(250,248,246,0.5); text-decoration: none;
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--pink-light); }
+  .nav-join {
+    padding: 0.55rem 1.4rem;
+    border: 1px solid var(--pink-deep);
+    background: rgba(201,107,148,0.12);
+    color: var(--pink-light) !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, border-color 0.3s !important;
+    white-space: nowrap;
+  }
+  .nav-join:hover { background: rgba(201,107,148,0.28) !important; border-color: var(--pink-light) !important; color: var(--pink-light) !important; }
+
+  .nav-toggle {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; width: 40px; height: 40px;
+    background: none; border: none; cursor: pointer; padding: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-toggle span {
+    display: block; width: 100%; height: 1px; background: var(--pink-light);
+    transition: transform 0.35s ease, opacity 0.35s ease; transform-origin: center;
+  }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .nav-drawer {
+    display: none; position: fixed;
+    top: var(--nav-h); left: 0; right: 0;
+    background: rgba(8,8,8,0.99);
+    padding: 1.5rem clamp(1.25rem, 5vw, 4rem) 2.5rem;
+    border-bottom: 1px solid rgba(240,184,204,0.1);
+    z-index: 190; transform: translateY(-110%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .nav-drawer.open { transform: translateY(0); }
+  .nav-drawer ul { list-style: none; }
+  .nav-drawer ul li a {
+    display: block; padding: 1rem 0;
+    border-bottom: 1px solid rgba(240,184,204,0.08);
+    color: rgba(250,248,246,0.7); text-decoration: none;
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    transition: color 0.3s, padding-left 0.3s;
+  }
+  .nav-drawer ul li a:hover { color: var(--pink-light); padding-left: 0.5rem; }
+  .drawer-join {
+    margin-top: 1rem;
+    border: 1px solid var(--pink-deep) !important;
+    background: rgba(201,107,148,0.12);
+    color: var(--pink-light) !important;
+    text-align: center;
+    border-bottom: 1px solid var(--pink-deep) !important;
+  }
+  .drawer-join:hover { background: rgba(201,107,148,0.25) !important; padding-left: 0 !important; }
+
+  /* ── SECTION BACKGROUNDS ──────────────────── */
+  .bg-black { background: var(--black); }
+  .bg-pink  { background: var(--pink-bg); }
+
+  /* Text colours adjust on pink bg */
+  .bg-pink .section-label { color: var(--pink-light); }
+  .bg-pink .fw-tag { color: var(--pink-light); opacity: 0.8; }
+  .bg-pink .fw-num { color: rgba(240,184,204,0.15); }
+  .bg-pink .fw-item p { color: rgba(250,248,246,0.55); }
+  .bg-pink .framework-grid { border-color: rgba(240,184,204,0.15); }
+  .bg-pink .fw-item { border-color: rgba(240,184,204,0.15); }
+  .bg-pink .fw-item:hover { background: rgba(240,184,204,0.05); }
+  .bg-pink .for-list li { border-color: rgba(240,184,204,0.15); }
+  .bg-pink .bad-card { border-color: rgba(240,184,204,0.18); background: rgba(240,184,204,0.04); }
+  .bg-pink .bad-card:hover { background: rgba(240,184,204,0.08); border-color: rgba(240,184,204,0.35); }
+  .bg-pink .bad-desc { color: rgba(250,248,246,0.65); }
+
+  /* ── SHARED ───────────────────────────────── */
+  .section-wrap { padding: clamp(4rem, 8vw, 7rem) clamp(1.25rem, 5vw, 4rem); }
+  .section-label {
+    font-size: 0.6rem; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--pink);
+    margin-bottom: 0.75rem; display: block;
+  }
+
+  /* ── HERO (black) ─────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    padding: calc(var(--nav-h) + 3rem) clamp(1.25rem, 6vw, 4rem) 5rem;
+    background: var(--black);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 55% 45% at 50% 70%, rgba(201,107,148,0.1) 0%, transparent 65%);
+  }
+
+  .hero-eyebrow {
+    font-size: clamp(0.58rem, 1.5vw, 0.7rem); letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--pink);
+    margin-bottom: 1.5rem; opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s; position: relative; z-index: 1;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(4rem, 18vw, 11rem); font-weight: 300;
+    color: var(--pink-light);
+    line-height: 0.88; letter-spacing: -0.02em; margin-bottom: 0.25em;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.5s; position: relative; z-index: 1;
+  }
+  .hero-pills {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 0.4rem 1rem; margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.7s; position: relative; z-index: 1;
+  }
+  .hero-pills span {
+    font-size: clamp(0.58rem, 1.8vw, 0.78rem); font-weight: 200;
+    letter-spacing: 0.35em; text-transform: uppercase; color: rgba(250,248,246,0.4);
+  }
+  .hero-pills .dot { color: rgba(240,184,204,0.35); }
+  .hero-description {
+    max-width: 500px; font-size: clamp(0.9rem, 2.2vw, 1rem);
+    line-height: 1.9; color: rgba(250,248,246,0.6); margin-bottom: 3rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.9s; position: relative; z-index: 1;
+  }
+  .hero-cta {
+    display: inline-block; padding: 0.95rem 2.5rem;
+    border: 1px solid var(--pink-deep); background: rgba(201,107,148,0.12);
+    color: var(--pink-light); text-decoration: none;
+    font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+    transition: background 0.3s, border-color 0.3s;
+    opacity: 0; animation: fadeUp 1s ease forwards 1.1s; position: relative; z-index: 1;
+  }
+  .hero-cta:hover { background: rgba(201,107,148,0.25); border-color: var(--pink-light); }
+  .scroll-line {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%); width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--pink), transparent);
+    opacity: 0; animation: fadeIn 1s ease forwards 1.5s; z-index: 1;
+  }
+
+  /* ── ABOUT (pink bg) ──────────────────────── */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(2.5rem, 6vw, 6rem); align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .about-left h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    font-weight: 300; line-height: 1.2; color: var(--white);
+  }
+  .about-left h2 em { color: var(--pink-light); font-style: italic; }
+  .about-right p {
+    font-size: clamp(0.88rem, 2vw, 1rem);
+    line-height: 1.95; color: rgba(250,248,246,0.7); margin-bottom: 1.25rem;
+  }
+  .bad-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1.15rem !important;
+    color: var(--pink-light) !important; margin-bottom: 0 !important;
+  }
+
+  /* ── BAD SECTION (black bg) ───────────────── */
+  .bad-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+  .bad-inner > h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; color: var(--white); margin-bottom: 1rem;
+  }
+  .bad-inner > p {
+    font-size: clamp(0.88rem, 2vw, 0.97rem);
+    color: rgba(250,248,246,0.45); max-width: 500px; margin: 0 auto 3rem; line-height: 1.8;
+  }
+  .bad-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .bad-card {
+    padding: 2rem 1.75rem;
+    border: 1px solid rgba(240,184,204,0.14);
+    background: rgba(240,184,204,0.03);
+    text-align: left; transition: border-color 0.3s, background 0.3s;
+    position: relative;
+  }
+  .bad-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--pink-deep);
+  }
+  .bad-card:hover { border-color: rgba(240,184,204,0.3); background: rgba(240,184,204,0.06); }
+  .bad-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 300; line-height: 1;
+    color: var(--pink-light); margin-bottom: 0.5rem;
+  }
+  .bad-word {
+    font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 1rem;
+  }
+  .bad-desc { font-size: 0.87rem; line-height: 1.8; color: rgba(250,248,246,0.6); }
+
+  /* ── FRAMEWORK (pink bg) ──────────────────── */
+  .framework-inner { max-width: 1200px; margin: 0 auto; }
+  .framework-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 2rem; margin-bottom: clamp(2.5rem, 5vw, 5rem); flex-wrap: wrap;
+  }
+  .framework-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4.5vw, 3rem); font-weight: 300; color: var(--white);
+  }
+  .framework-header .sub {
+    max-width: 300px; font-size: 0.85rem; line-height: 1.75; color: rgba(250,248,246,0.45);
+  }
+  .framework-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border: 1px solid rgba(240,184,204,0.12);
+  }
+  .fw-item {
+    padding: clamp(1.75rem, 3vw, 3rem) clamp(1.25rem, 2.5vw, 2rem);
+    border-right: 1px solid rgba(240,184,204,0.12);
+    transition: background 0.4s;
+  }
+  .fw-item:last-child { border-right: none; }
+  .fw-item:hover { background: rgba(240,184,204,0.06); }
+  .fw-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    color: rgba(240,184,204,0.15); line-height: 1; margin-bottom: 1.25rem; font-weight: 300;
+  }
+  .fw-tag {
+    font-size: 0.58rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--pink-light); margin-bottom: 0.4rem; opacity: 0.75;
+  }
+  .fw-item h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 400; color: var(--white); margin-bottom: 0.85rem; line-height: 1.25;
+  }
+  .fw-item p { font-size: clamp(0.8rem, 1.5vw, 0.86rem); line-height: 1.85; color: rgba(250,248,246,0.55); }
+
+  /* ── WHO (black bg) ───────────────────────── */
+  .for-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(2.5rem, 7vw, 8rem); align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .for-left h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.9rem, 4.5vw, 3.5rem);
+    font-weight: 300; color: var(--white); line-height: 1.2;
+  }
+  .for-left h2 em { color: var(--pink-light); font-style: italic; }
+  .for-list { list-style: none; }
+  .for-list li {
+    font-size: clamp(0.85rem, 1.8vw, 0.93rem);
+    line-height: 1.65; color: rgba(250,248,246,0.65);
+    padding: 1rem 0; border-bottom: 1px solid rgba(240,184,204,0.1);
+    display: flex; align-items: flex-start; gap: 1rem; transition: color 0.25s;
+  }
+  .for-list li:hover { color: rgba(250,248,246,0.9); }
+  .for-list li::before {
+    content: ''; width: 5px; height: 5px; min-width: 5px;
+    border-radius: 50%; background: var(--pink-light); margin-top: 0.55em;
+  }
+
+  /* ── BELIEF (pink bg) ─────────────────────── */
+  .belief-wrap { text-align: center; max-width: 760px; margin: 0 auto; }
+  .belief-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 5.5vw, 3.5rem);
+    font-style: italic; font-weight: 300; color: var(--pink-light);
+    margin-bottom: 2rem; line-height: 1.3;
+  }
+  .belief-body {
+    font-size: clamp(0.88rem, 2vw, 0.97rem);
+    line-height: 1.95; color: rgba(250,248,246,0.68); margin-bottom: 1.5rem;
+  }
+
+  /* ── TRANSFORMS (black bg) ────────────────── */
+  .transforms {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    border: 1px solid rgba(240,184,204,0.13);
+    max-width: 1000px; margin: 0 auto;
+  }
+  .t-item {
+    padding: clamp(1.5rem, 2.5vw, 2rem) clamp(1rem, 2vw, 2.5rem);
+    text-align: center;
+    border-right: 1px solid rgba(240,184,204,0.13);
+    transition: background 0.3s;
+  }
+  .t-item:last-child { border-right: none; }
+  .t-item:hover { background: rgba(240,184,204,0.05); }
+  .t-from {
+    font-size: clamp(0.58rem, 1.2vw, 0.68rem); letter-spacing: 0.15em;
+    color: rgba(250,248,246,0.3); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .t-arrow { color: var(--pink); display: block; margin: 0.2rem 0; font-size: 1rem; }
+  .t-to {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2vw, 1.25rem); color: var(--white); font-weight: 400;
+  }
+
+  /* ── CTA (pink bg) ────────────────────────── */
+  .cta-wrap {
+    background: var(--pink-bg);
+    text-align: center;
+    padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem);
+    position: relative; overflow: hidden;
+  }
+  .cta-wrap::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 50% 55% at 50% 50%, rgba(201,107,148,0.12) 0%, transparent 65%);
+  }
+  .cta-wrap h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 6vw, 4.8rem);
+    font-weight: 300; font-style: italic; color: var(--white);
+    margin-bottom: 1.25rem; line-height: 1.2; position: relative; z-index: 1;
+  }
+  .cta-wrap h2 em { color: var(--pink-light); }
+  .cta-wrap > p {
+    font-size: clamp(0.88rem, 2vw, 0.97rem);
+    color: rgba(250,248,246,0.6); max-width: 460px;
+    margin: 0 auto 2.75rem; line-height: 1.85; position: relative; z-index: 1;
+  }
+  .cta-buttons {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem;
+    position: relative; z-index: 1;
+  }
+  .btn-primary {
+    padding: 1rem 2.5rem; background: var(--pink-deep); color: var(--white);
+    text-decoration: none; font-size: 0.68rem; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 500;
+    transition: background 0.3s, transform 0.3s; white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--pink-muted); transform: translateY(-2px); }
+  .btn-secondary {
+    padding: 1rem 2.5rem; border: 1px solid rgba(240,184,204,0.4);
+    color: rgba(250,248,246,0.7); text-decoration: none;
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+    transition: border-color 0.3s, color 0.3s; white-space: nowrap;
+  }
+  .btn-secondary:hover { border-color: var(--pink-light); color: var(--pink-light); }
+
+  /* ── FOOTER ──────────────────────────────── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(240,184,204,0.08);
+    padding: 2rem clamp(1.25rem, 5vw, 4rem);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1.2rem; color: var(--pink-light);
+  }
+  footer p { font-size: 0.62rem; letter-spacing: 0.14em; color: rgba(250,248,246,0.25); text-transform: uppercase; }
+
+  /* ── ANIMATIONS ───────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── BREAKPOINTS ─────────────────────────── */
+  @media (max-width: 1024px) {
+    .framework-grid { grid-template-columns: 1fr 1fr; }
+    .fw-item { border-bottom: 1px solid rgba(240,184,204,0.12); }
+    .fw-item:nth-child(2) { border-right: none; }
+    .fw-item:nth-child(3) { border-right: 1px solid rgba(240,184,204,0.12); }
+    .fw-item:nth-child(4) { border-right: none; }
+    .fw-item:nth-child(3), .fw-item:nth-child(4) { border-bottom: none; }
+    .bad-cards { gap: 1rem; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-drawer { display: block; }
+
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .framework-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .framework-header .sub { max-width: 100%; }
+    .for-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .bad-cards { grid-template-columns: 1fr; }
+
+    .transforms { grid-template-columns: repeat(3, 1fr); }
+    .t-item:nth-child(3) { border-right: none; }
+    .t-item:nth-child(4), .t-item:nth-child(5) { border-top: 1px solid rgba(240,184,204,0.13); }
+    .t-item:nth-child(5) { border-right: none; }
+    .t-item:nth-child(4) { border-right: 1px solid rgba(240,184,204,0.13); }
+
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  @media (max-width: 520px) {
+    .framework-grid { grid-template-columns: 1fr; }
+    .fw-item { border-right: none !important; border-bottom: 1px solid rgba(240,184,204,0.12) !important; }
+    .fw-item:last-child { border-bottom: none !important; }
+    .transforms { grid-template-columns: 1fr; }
+    .t-item { border-right: none !important; border-bottom: 1px solid rgba(240,184,204,0.13) !important; border-top: none !important; }
+    .t-item:last-child { border-bottom: none !important; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; padding: 1.1rem 1.5rem; }
+    .hero-pills .dot { display: none; }
+    .scroll-line { display: none; }
+  }
+
+  @media (max-width: 360px) { .hero-title { font-size: 3.5rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">The Audit</a>
+  <ul class="nav-links">
+    <li><a href="#framework">Framework</a></li>
+    <li><a href="#who">Who It's For</a></li>
+    <li><a href="#belief">The Belief</a></li>
+    <li><a href="contact.html">Begin</a></li>
+    <li><a href="contact.html" class="nav-join">Join The Audit</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <ul>
+    <li><a href="#framework" class="drawer-link">Framework</a></li>
+    <li><a href="#who" class="drawer-link">Who It's For</a></li>
+    <li><a href="#belief" class="drawer-link">The Belief</a></li>
+    <li><a href="contact.html" class="drawer-link">Begin</a></li>
+    <li><a href="contact.html" class="drawer-link drawer-join">Join The Audit</a></li>
+  </ul>
+</div>
+
+<!-- HERO — black -->
+<header class="hero">
+  <p class="hero-eyebrow">BAD Systems Methodology</p>
+  <h1 class="hero-title">The Audit</h1>
+  <div class="hero-pills">
+    <span>Review</span><span class="dot">·</span>
+    <span>Refine</span><span class="dot">·</span>
+    <span>Protect</span><span class="dot">·</span>
+    <span>Integrate</span>
+  </div>
+  <p class="hero-description">
+    A structured pause for ambitious women who are building full lives — and don't want success to cost them their wholeness, softness, or peace.
+  </p>
+  <a href="#framework" class="hero-cta">Explore the Framework</a>
+  <div class="scroll-line"></div>
+</header>
+
+<!-- ABOUT — pink -->
+<section class="section-wrap bg-pink">
+  <div class="about-grid">
+    <div class="about-left reveal">
+      <span class="section-label">What Is This</span>
+      <h2>Not a teardown.<br><em>A redesign.</em></h2>
+    </div>
+    <div class="about-right reveal">
+      <p>The Audit is a guided, human-first reset — powered by BAD Systems methodology — where ambitious women step back with intention to evaluate what's working, what feels misaligned, and what needs to be redesigned.</p>
+      <p>Before burnout makes the decision for you. Because the goal was never just a scalable business. It was a life your business supports.</p>
+      <p class="bad-text">Build. Automate. Delegate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BAD SYSTEMS — black -->
+<section class="section-wrap bg-black">
+  <div class="bad-inner">
+    <span class="section-label">The Methodology</span>
+    <h2>BAD Systems</h2>
+    <p>A three-step order that ensures you build clarity before you automate it — and automate it before you delegate it.</p>
+    <div class="bad-cards">
+      <div class="bad-card reveal">
+        <div class="bad-letter">B</div>
+        <p class="bad-word">Build</p>
+        <p class="bad-desc">Create the right foundations first. Processes, offers, and systems that actually work — before you try to scale anything.</p>
+      </div>
+      <div class="bad-card reveal">
+        <div class="bad-letter">A</div>
+        <p class="bad-word">Automate</p>
+        <p class="bad-desc">Once something works consistently, remove yourself from the repetitive parts using tools and technology.</p>
+      </div>
+      <div class="bad-card reveal">
+        <div class="bad-letter">D</div>
+        <p class="bad-word">Delegate</p>
+        <p class="bad-desc">Hand off what's left to people so your time and energy go where only you can operate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAMEWORK — pink -->
+<section class="section-wrap bg-pink" id="framework">
+  <div class="framework-inner">
+    <div class="framework-header reveal">
+      <div>
+        <span class="section-label">The Framework</span>
+        <h2>Four Intentional Layers</h2>
+      </div>
+      <p class="sub">Each layer rooted in the BAD Systems philosophy of building businesses that protect your time, energy, and relationships — not consume them.</p>
+    </div>
+    <div class="framework-grid">
+      <div class="fw-item reveal">
+        <div class="fw-num">01</div>
+        <p class="fw-tag">Review</p>
+        <h3>See Clearly</h3>
+        <p>Taking an honest look at your life, business, habits, and systems — without shame or urgency. Not to tear it down. To see it clearly.</p>
+      </div>
+      <div class="fw-item reveal">
+        <div class="fw-num">02</div>
+        <p class="fw-tag">Refine</p>
+        <h3>Redesign With Intention</h3>
+        <p>Simplifying, redesigning, or releasing what no longer serves your next season. Where what you created gets pressure-tested against who you're becoming.</p>
+      </div>
+      <div class="fw-item reveal">
+        <div class="fw-num">03</div>
+        <p class="fw-tag">Protect</p>
+        <h3>Freedom By Design</h3>
+        <p>Safeguarding your time, energy, nervous system, and identity. This is the work Automate and Delegate were always meant to serve.</p>
+      </div>
+      <div class="fw-item reveal">
+        <div class="fw-num">04</div>
+        <p class="fw-tag">Integrate</p>
+        <h3>Architecture for Real Life</h3>
+        <p>Using tech, structure, and systems in service of your humanity — not in opposition to it. BAD Systems in its fullest expression.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR — black -->
+<section class="section-wrap bg-black" id="who">
+  <div class="for-grid">
+    <div class="for-left reveal">
+      <span class="section-label">Who It's For</span>
+      <h2>Built for builders who don't want to <em>burn it down.</em></h2>
+    </div>
+    <div class="for-right reveal">
+      <ul class="for-list">
+        <li>Feel capable but stretched thin</li>
+        <li>Have built success that doesn't fully feel like theirs</li>
+        <li>Want better systems without becoming robotic</li>
+        <li>Care deeply about impact — and about being present</li>
+        <li>Are ready to stop being the bottleneck in their own lives</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- BELIEF — pink -->
+<section class="section-wrap bg-pink" id="belief">
+  <div class="belief-wrap">
+    <span class="section-label">The Core Belief</span>
+    <p class="belief-quote reveal">"Discomfort is information."</p>
+    <p class="belief-body reveal">Overwhelm. Irritation. Fatigue. Resistance. These are signals — not character flaws. BAD Systems was built on this same truth — that pain can become purpose, that anxiety can become structure, that overwhelm can become clarity.</p>
+    <p class="belief-body reveal">The Audit is where that translation happens in real time, in community, with intention. Your signals aren't telling you that you've failed. They're telling you something needs to be redesigned.</p>
+  </div>
+</section>
+
+<!-- TRANSFORMS — black -->
+<section class="section-wrap bg-black">
+  <div class="transforms">
+    <div class="t-item reveal"><p class="t-from">Pain</p><span class="t-arrow">↓</span><p class="t-to">Purpose</p></div>
+    <div class="t-item reveal"><p class="t-from">Anxiety</p><span class="t-arrow">↓</span><p class="t-to">Clarity</p></div>
+    <div class="t-item reveal"><p class="t-from">Discomfort</p><span class="t-arrow">↓</span><p class="t-to">Growth</p></div>
+    <div class="t-item reveal"><p class="t-from">Overwhelm</p><span class="t-arrow">↓</span><p class="t-to">Ownership</p></div>
+    <div class="t-item reveal"><p class="t-from">Complexity</p><span class="t-arrow">↓</span><p class="t-to">Simplicity</p></div>
+  </div>
+</section>
+
+<!-- CTA — pink -->
+<div class="cta-wrap" id="begin">
+  <h2 class="reveal">Your breakthrough is already<br><em>inside your business.</em></h2>
+  <p class="reveal">We work alongside you — helping you see clearly, move deliberately, and build systems you actually understand and own.</p>
+  <div class="cta-buttons reveal">
+    <a href="contact.html" class="btn-primary">Begin The Audit</a>
+    <a href="#framework" class="btn-secondary">Learn More</a>
+  </div>
+</div>
+
+<!-- FOOTER — black -->
+<footer>
+  <div class="footer-logo">The Audit</div>
+  <p>Powered by <a href="https://badsystems.co" target="_blank" rel="noopener" style="color: var(--pink-light); text-decoration: none; border-bottom: 1px solid rgba(240,184,204,0.3); transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(240,184,204,0.8)'" onmouseout="this.style.borderColor='rgba(240,184,204,0.3)'">BAD Systems</a></p>
+  <p id="footer-year">© 2025 The Audit. All rights reserved.</p>
+</footer>
+
+<script>
+  // ── Dynamic year
+  document.getElementById('footer-year').textContent = `© ${new Date().getFullYear()} The Audit. All rights reserved.`;
+
+  // ── Smooth scroll with fixed nav offset
+  const NAV_H = 70;
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (!href || href === '#') return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.pageYOffset - NAV_H;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  // ── Scroll reveals
+  const reveals = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => ro.observe(el));
+
+  // ── Stagger delays
+  document.querySelectorAll('.fw-item').forEach((el, i) => { el.style.transitionDelay = `${i * 0.1}s`; });
+  document.querySelectorAll('.t-item').forEach((el, i) => { el.style.transitionDelay = `${i * 0.08}s`; });
+  document.querySelectorAll('.bad-card').forEach((el, i) => { el.style.transitionDelay = `${i * 0.12}s`; });
+
+  // ── Mobile nav
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+
+  function closeDrawer() {
+    toggle.classList.remove('open');
+    drawer.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.classList.toggle('open');
+    drawer.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  document.addEventListener('click', e => {
+    if (drawer.classList.contains('open') && !drawer.contains(e.target) && !toggle.contains(e.target)) {
+      closeDrawer();
+    }
+  });
+</script>
+</body>
+</html>

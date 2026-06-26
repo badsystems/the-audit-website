@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join The Audit — Contact</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:      #080808;
+    --pink-bg:    #2a0e1a;
+    --pink-light: #f0b8cc;
+    --pink:       #e896b4;
+    --pink-deep:  #c96b94;
+    --pink-muted: #9b4d6e;
+    --white:      #faf8f6;
+    --nav-h: 70px;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── NAV ──────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--nav-h);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 clamp(1.25rem, 5vw, 4rem);
+    background: rgba(8,8,8,0.97);
+    border-bottom: 1px solid rgba(240,184,204,0.12);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1.5rem;
+    color: var(--pink-light); letter-spacing: 0.04em; text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: rgba(250,248,246,0.5); text-decoration: none;
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--pink-light); }
+  .nav-join {
+    padding: 0.55rem 1.4rem;
+    border: 1px solid var(--pink-deep);
+    background: rgba(201,107,148,0.12);
+    color: var(--pink-light) !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.3s, border-color 0.3s !important;
+    white-space: nowrap;
+  }
+  .nav-join:hover { background: rgba(201,107,148,0.28) !important; border-color: var(--pink-light) !important; color: var(--pink-light) !important; }
+
+  .nav-toggle {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; width: 40px; height: 40px;
+    background: none; border: none; cursor: pointer; padding: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-toggle span {
+    display: block; width: 100%; height: 1px; background: var(--pink-light);
+    transition: transform 0.35s ease, opacity 0.35s ease; transform-origin: center;
+  }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .nav-drawer {
+    display: none; position: fixed;
+    top: var(--nav-h); left: 0; right: 0;
+    background: rgba(8,8,8,0.99);
+    padding: 1.5rem clamp(1.25rem, 5vw, 4rem) 2.5rem;
+    border-bottom: 1px solid rgba(240,184,204,0.1);
+    z-index: 190; transform: translateY(-110%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .nav-drawer.open { transform: translateY(0); }
+  .nav-drawer ul { list-style: none; }
+  .nav-drawer ul li a {
+    display: block; padding: 1rem 0;
+    border-bottom: 1px solid rgba(240,184,204,0.08);
+    color: rgba(250,248,246,0.7); text-decoration: none;
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    transition: color 0.3s, padding-left 0.3s;
+  }
+  .nav-drawer ul li a:hover { color: var(--pink-light); padding-left: 0.5rem; }
+  .drawer-join {
+    margin-top: 1rem;
+    border: 1px solid var(--pink-deep) !important;
+    background: rgba(201,107,148,0.12);
+    color: var(--pink-light) !important;
+    text-align: center;
+    border-bottom: 1px solid var(--pink-deep) !important;
+  }
+  .drawer-join:hover { background: rgba(201,107,148,0.25) !important; padding-left: 0 !important; }
+
+  /* ── HERO BANNER ─────────────────────────── */
+  .contact-hero {
+    background: var(--pink-bg);
+    padding: calc(var(--nav-h) + 4rem) clamp(1.25rem, 5vw, 4rem) 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .contact-hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 55% 60% at 50% 60%, rgba(201,107,148,0.12) 0%, transparent 65%);
+  }
+  .contact-hero .eyebrow {
+    font-size: 0.62rem; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 1.25rem; position: relative; z-index: 1;
+    animation: fadeUp 0.7s ease forwards 0.2s; opacity: 0;
+  }
+  .contact-hero h1 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(3rem, 10vw, 6.5rem); font-weight: 300;
+    color: var(--pink-light); line-height: 1; margin-bottom: 1.25rem;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.9s ease forwards 0.35s; opacity: 0;
+  }
+  .contact-hero p {
+    max-width: 480px; margin: 0 auto;
+    font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.85;
+    color: rgba(250,248,246,0.65);
+    position: relative; z-index: 1;
+    animation: fadeUp 0.9s ease forwards 0.5s; opacity: 0;
+  }
+
+  /* ── FORM SECTION ────────────────────────── */
+  .form-section {
+    background: var(--black);
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem);
+    flex: 1;
+  }
+  .form-inner {
+    max-width: 860px; margin: 0 auto;
+  }
+  .fillout-wrap {
+    width: 100%;
+    border: 1px solid rgba(240,184,204,0.12);
+    overflow: hidden;
+  }
+
+  /* ── FOOTER ──────────────────────────────── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(240,184,204,0.08);
+    padding: 2rem clamp(1.25rem, 5vw, 4rem);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 1.2rem; color: var(--pink-light);
+  }
+  footer p { font-size: 0.62rem; letter-spacing: 0.14em; color: rgba(250,248,246,0.25); text-transform: uppercase; }
+
+  /* ── ANIMATIONS ───────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ───────────────────────────── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-drawer { display: block; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">The Audit</a>
+  <ul class="nav-links">
+    <li><a href="index.html#framework">Framework</a></li>
+    <li><a href="index.html#who">Who It's For</a></li>
+    <li><a href="index.html#belief">The Belief</a></li>
+    <li><a href="contact.html">Begin</a></li>
+    <li><a href="contact.html" class="nav-join">Join The Audit</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-drawer" id="navDrawer">
+  <ul>
+    <li><a href="index.html#framework" class="drawer-link">Framework</a></li>
+    <li><a href="index.html#who" class="drawer-link">Who It's For</a></li>
+    <li><a href="index.html#belief" class="drawer-link">The Belief</a></li>
+    <li><a href="contact.html" class="drawer-link">Begin</a></li>
+    <li><a href="contact.html" class="drawer-link drawer-join">Join The Audit</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<div class="contact-hero">
+  <p class="eyebrow">Let's Connect</p>
+  <h1>Join The Audit</h1>
+  <p>Ready to step back with intention? Fill out the form below and we'll be in touch about your next season.</p>
+</div>
+
+<!-- FORM -->
+<section class="form-section">
+  <div class="form-inner">
+    <div class="fillout-wrap">
+      <div style="width:100%;height:500px;" data-fillout-id="6xCkqWDKXBus" data-fillout-embed-type="standard" data-fillout-inherit-parameters data-fillout-dynamic-resize></div>
+      <script src="https://server.fillout.com/embed/v1/"></script>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Audit</div>
+  <p>Powered by <a href="https://badsystems.co" target="_blank" rel="noopener" style="color: var(--pink-light); text-decoration: none; border-bottom: 1px solid rgba(240,184,204,0.3); transition: border-color 0.3s;" onmouseover="this.style.borderColor='rgba(240,184,204,0.8)'" onmouseout="this.style.borderColor='rgba(240,184,204,0.3)'">BAD Systems</a></p>
+  <p id="footer-year">© 2025 The Audit. All rights reserved.</p>
+</footer>
+
+<script>
+  // Dynamic year
+  document.getElementById('footer-year').textContent = `© ${new Date().getFullYear()} The Audit. All rights reserved.`;
+
+  // Mobile nav
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+
+  function closeDrawer() {
+    toggle.classList.remove('open');
+    drawer.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.classList.toggle('open');
+    drawer.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  document.addEventListener('click', e => {
+    if (drawer.classList.contains('open') && !drawer.contains(e.target) && !toggle.contains(e.target)) {
+      closeDrawer();
+    }
+  });
+</script>
+</body>
+</html>
