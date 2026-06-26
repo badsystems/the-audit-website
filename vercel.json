@@ -8,5 +8,9 @@
       "destination": "https://jointheaudit.com/:path*",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/contact.html" }
   ]
 }
