@@ -1,0 +1,12 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.jointheaudit.com" }],
+      "destination": "https://jointheaudit.com/:path*",
+      "permanent": true
+    }
+  ]
+}
