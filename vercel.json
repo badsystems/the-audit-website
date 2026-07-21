@@ -13,6 +13,7 @@
     { "source": "/", "destination": "/index.html" },
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/events", "destination": "/events.html" },
-    { "source": "/admin/events", "destination": "/admin/events.html" }
+    { "source": "/admin/events", "destination": "/admin/events.html" },
+    { "source": "/events/pickleball-tech-lunch-learn", "destination": "/events/pickleball-tech-lunch-learn/index.html" }
   ]
 }
