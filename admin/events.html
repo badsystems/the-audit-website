@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Manage Events — The Audit</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:      #080808;
+    --pink-bg:    #2a0e1a;
+    --pink-light: #f0b8cc;
+    --pink:       #e896b4;
+    --pink-deep:  #c96b94;
+    --pink-muted: #9b4d6e;
+    --white:      #faf8f6;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black); color: var(--white);
+    font-family: 'Raleway', sans-serif; font-weight: 300; line-height: 1.6;
+    min-height: 100vh;
+  }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+  a { color: var(--pink-light); }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 2rem); }
+
+  /* Login gate */
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+  }
+  .login-card {
+    width: 100%; max-width: 360px;
+    border: 1px solid rgba(240,184,204,0.14); background: rgba(240,184,204,0.03);
+    padding: 2.5rem;
+  }
+  .login-card h1 {
+    font-style: italic; font-size: 2rem; color: var(--pink-light); margin-bottom: 1.5rem; text-align: center;
+  }
+  .field { margin-bottom: 1.25rem; }
+  .field label {
+    display: block; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(250,248,246,0.5); margin-bottom: 0.5rem;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(240,184,204,0.2);
+    color: var(--white); padding: 0.7rem 0.85rem; font-family: inherit; font-size: 0.9rem;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none; border-color: var(--pink-light);
+  }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .btn {
+    display: inline-block; padding: 0.8rem 2rem; border: 1px solid var(--pink-deep);
+    background: rgba(201,107,148,0.12); color: var(--pink-light);
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.3s, border-color 0.3s;
+  }
+  .btn:hover { background: rgba(201,107,148,0.25); border-color: var(--pink-light); }
+  .btn-secondary {
+    background: none; border-color: rgba(240,184,204,0.3); color: rgba(250,248,246,0.6);
+  }
+  .btn-danger { border-color: #c96b6b; color: #f0b8b8; }
+  .btn-danger:hover { background: rgba(201,107,107,0.2); }
+  .btn-block { width: 100%; }
+
+  .error-msg { color: #f0b8b8; font-size: 0.8rem; margin-top: 0.75rem; min-height: 1em; }
+
+  /* Admin shell */
+  #adminScreen { display: none; }
+  .admin-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .admin-header h1 { font-style: italic; font-size: 2.25rem; color: var(--pink-light); }
+  .section-label {
+    font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--pink);
+    margin-bottom: 0.75rem; display: block;
+  }
+
+  .panel {
+    border: 1px solid rgba(240,184,204,0.14); background: rgba(240,184,204,0.03);
+    padding: 2rem; margin-bottom: 2.5rem;
+  }
+  .panel h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    text-align: left; padding: 0.85rem 0.5rem; font-size: 0.83rem;
+    border-bottom: 1px solid rgba(240,184,204,0.1); vertical-align: top;
+  }
+  th {
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(250,248,246,0.45); font-weight: 400;
+  }
+  .status-pill {
+    display: inline-block; padding: 0.2rem 0.6rem; font-size: 0.6rem;
+    letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid rgba(240,184,204,0.3);
+  }
+  .status-pill.published { color: var(--pink-light); border-color: var(--pink-deep); background: rgba(201,107,148,0.12); }
+  .status-pill.draft { color: rgba(250,248,246,0.5); }
+  .row-actions { display: flex; gap: 0.5rem; white-space: nowrap; }
+  .row-actions button {
+    background: none; border: none; color: var(--pink-light); cursor: pointer;
+    font-size: 0.72rem; letter-spacing: 0.05em; text-decoration: underline; padding: 0;
+  }
+  .row-actions .danger { color: #f0b8b8; }
+  .empty-row td { text-align: center; color: rgba(250,248,246,0.4); padding: 2rem 0; }
+
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    align-items: flex-start; justify-content: center; padding: 3rem 1rem; overflow-y: auto; z-index: 300;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    width: 100%; max-width: 560px; background: var(--black);
+    border: 1px solid rgba(240,184,204,0.2); padding: 2rem;
+  }
+  .modal h2 { font-size: 1.6rem; margin-bottom: 1.5rem; }
+  .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>The Audit</h1>
+    <form id="loginForm">
+      <div class="field">
+        <label for="password">Admin Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-block">Sign In</button>
+      <p class="error-msg" id="loginError"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN SCREEN -->
+<div id="adminScreen">
+  <div class="wrap">
+    <div class="admin-header">
+      <h1>Manage Events</h1>
+      <div>
+        <button class="btn btn-secondary" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="section-label">Add Event</span>
+      <h2>New Event</h2>
+      <form id="createForm">
+        <div class="field">
+          <label for="c-title">Title *</label>
+          <input type="text" id="c-title" required>
+        </div>
+        <div class="field">
+          <label for="c-location">Location *</label>
+          <input type="text" id="c-location" required>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="c-start">Start Date/Time *</label>
+            <input type="datetime-local" id="c-start" required>
+          </div>
+          <div class="field">
+            <label for="c-end">End Date/Time</label>
+            <input type="datetime-local" id="c-end">
+          </div>
+        </div>
+        <div class="field">
+          <label for="c-description">Description</label>
+          <textarea id="c-description"></textarea>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="c-image">Image URL</label>
+            <input type="url" id="c-image">
+          </div>
+          <div class="field">
+            <label for="c-rsvp">RSVP Link</label>
+            <input type="url" id="c-rsvp">
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="c-capacity">Capacity</label>
+            <input type="number" min="1" id="c-capacity">
+          </div>
+          <div class="field">
+            <label for="c-status">Status</label>
+            <select id="c-status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn">Add Event</button>
+        <p class="error-msg" id="createError"></p>
+      </form>
+    </div>
+
+    <div class="panel">
+      <span class="section-label">All Events</span>
+      <h2>Events</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Starts</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="eventsTableBody">
+          <tr class="empty-row"><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-backdrop" id="editBackdrop">
+  <div class="modal">
+    <h2>Edit Event</h2>
+    <form id="editForm">
+      <input type="hidden" id="e-id">
+      <div class="field">
+        <label for="e-title">Title *</label>
+        <input type="text" id="e-title" required>
+      </div>
+      <div class="field">
+        <label for="e-location">Location *</label>
+        <input type="text" id="e-location" required>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="e-start">Start Date/Time *</label>
+          <input type="datetime-local" id="e-start" required>
+        </div>
+        <div class="field">
+          <label for="e-end">End Date/Time</label>
+          <input type="datetime-local" id="e-end">
+        </div>
+      </div>
+      <div class="field">
+        <label for="e-description">Description</label>
+        <textarea id="e-description"></textarea>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="e-image">Image URL</label>
+          <input type="url" id="e-image">
+        </div>
+        <div class="field">
+          <label for="e-rsvp">RSVP Link</label>
+          <input type="url" id="e-rsvp">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="e-capacity">Capacity</label>
+          <input type="number" min="1" id="e-capacity">
+        </div>
+        <div class="field">
+          <label for="e-status">Status</label>
+          <select id="e-status">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
+      </div>
+      <p class="error-msg" id="editError"></p>
+      <div class="modal-actions">
+        <button type="submit" class="btn">Save Changes</button>
+        <button type="button" class="btn btn-secondary" id="editCancelBtn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const loginScreen = document.getElementById('loginScreen');
+  const adminScreen = document.getElementById('adminScreen');
+
+  function toDatetimeLocal(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  async function api(path, options = {}) {
+    const resp = await fetch(path, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      credentials: 'same-origin',
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      const err = new Error(data.error || (data.errors && data.errors.join(' ')) || 'Request failed');
+      err.status = resp.status;
+      err.data = data;
+      throw err;
+    }
+    return data;
+  }
+
+  // ── Login
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('loginError');
+    errorEl.textContent = '';
+    try {
+      await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ password }) });
+      loginScreen.style.display = 'none';
+      adminScreen.style.display = 'block';
+      loadEvents();
+    } catch (err) {
+      errorEl.textContent = 'Incorrect password.';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await api('/api/admin/logout', { method: 'POST' });
+    adminScreen.style.display = 'none';
+    loginScreen.style.display = 'flex';
+  });
+
+  // ── Check existing session by attempting to load events
+  async function checkSession() {
+    try {
+      await api('/api/admin/events');
+      loginScreen.style.display = 'none';
+      adminScreen.style.display = 'block';
+      loadEvents();
+    } catch {
+      loginScreen.style.display = 'flex';
+    }
+  }
+
+  // ── List
+  async function loadEvents() {
+    const tbody = document.getElementById('eventsTableBody');
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Loading…</td></tr>';
+    try {
+      const { events } = await api('/api/admin/events');
+      if (!events.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No events yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = events.map(ev => `
+        <tr data-id="${ev.id}">
+          <td>${escapeHtml(ev.title)}</td>
+          <td>${new Date(ev.start_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+          <td>${escapeHtml(ev.location)}</td>
+          <td><span class="status-pill ${ev.status}">${ev.status}</span></td>
+          <td>
+            <div class="row-actions">
+              <button type="button" class="edit-btn">Edit</button>
+              <button type="button" class="danger delete-btn">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      tbody.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.closest('tr').dataset.id;
+          const ev = events.find(e => e.id === id);
+          openEditModal(ev);
+        });
+      });
+      tbody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.closest('tr').dataset.id;
+          const ev = events.find(e => e.id === id);
+          if (!confirm(`Delete "${ev.title}"? This can't be undone.`)) return;
+          try {
+            await api(`/api/admin/events/${id}`, { method: 'DELETE' });
+            loadEvents();
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      });
+    } catch (err) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Failed to load events.</td></tr>';
+    }
+  }
+
+  // ── Create
+  document.getElementById('createForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errorEl = document.getElementById('createError');
+    errorEl.textContent = '';
+    const payload = {
+      title: document.getElementById('c-title').value,
+      location: document.getElementById('c-location').value,
+      start_at: document.getElementById('c-start').value ? new Date(document.getElementById('c-start').value).toISOString() : '',
+      end_at: document.getElementById('c-end').value ? new Date(document.getElementById('c-end').value).toISOString() : null,
+      description: document.getElementById('c-description').value,
+      image_url: document.getElementById('c-image').value,
+      rsvp_url: document.getElementById('c-rsvp').value,
+      capacity: document.getElementById('c-capacity').value || null,
+      status: document.getElementById('c-status').value,
+    };
+    try {
+      await api('/api/admin/events', { method: 'POST', body: JSON.stringify(payload) });
+      e.target.reset();
+      loadEvents();
+    } catch (err) {
+      errorEl.textContent = err.message;
+    }
+  });
+
+  // ── Edit modal
+  const editBackdrop = document.getElementById('editBackdrop');
+
+  function openEditModal(ev) {
+    document.getElementById('e-id').value = ev.id;
+    document.getElementById('e-title').value = ev.title;
+    document.getElementById('e-location').value = ev.location || '';
+    document.getElementById('e-start').value = toDatetimeLocal(ev.start_at);
+    document.getElementById('e-end').value = toDatetimeLocal(ev.end_at);
+    document.getElementById('e-description').value = ev.description || '';
+    document.getElementById('e-image').value = ev.image_url || '';
+    document.getElementById('e-rsvp').value = ev.rsvp_url || '';
+    document.getElementById('e-capacity').value = ev.capacity || '';
+    document.getElementById('e-status').value = ev.status;
+    document.getElementById('editError').textContent = '';
+    editBackdrop.classList.add('open');
+  }
+
+  document.getElementById('editCancelBtn').addEventListener('click', () => {
+    editBackdrop.classList.remove('open');
+  });
+
+  document.getElementById('editForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const errorEl = document.getElementById('editError');
+    errorEl.textContent = '';
+    const id = document.getElementById('e-id').value;
+    const payload = {
+      title: document.getElementById('e-title').value,
+      location: document.getElementById('e-location').value,
+      start_at: document.getElementById('e-start').value ? new Date(document.getElementById('e-start').value).toISOString() : '',
+      end_at: document.getElementById('e-end').value ? new Date(document.getElementById('e-end').value).toISOString() : null,
+      description: document.getElementById('e-description').value,
+      image_url: document.getElementById('e-image').value,
+      rsvp_url: document.getElementById('e-rsvp').value,
+      capacity: document.getElementById('e-capacity').value || null,
+      status: document.getElementById('e-status').value,
+    };
+    try {
+      await api(`/api/admin/events/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
+      editBackdrop.classList.remove('open');
+      loadEvents();
+    } catch (err) {
+      errorEl.textContent = err.message;
+    }
+  });
+
+  checkSession();
+</script>
+</body>
+</html>

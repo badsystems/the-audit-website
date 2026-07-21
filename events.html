@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Join The Audit — Contact</title>
+<title>Events — The Audit</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,7 +51,7 @@
     color: rgba(250,248,246,0.5); text-decoration: none;
     font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; transition: color 0.3s;
   }
-  .nav-links a:hover { color: var(--pink-light); }
+  .nav-links a:hover, .nav-links a.active { color: var(--pink-light); }
   .nav-join {
     padding: 0.55rem 1.4rem;
     border: 1px solid var(--pink-deep);
@@ -110,50 +110,118 @@
   .drawer-join:hover { background: rgba(201,107,148,0.25) !important; padding-left: 0 !important; }
 
   /* ── HERO BANNER ─────────────────────────── */
-  .contact-hero {
+  .events-hero {
     background: var(--pink-bg);
     padding: calc(var(--nav-h) + 4rem) clamp(1.25rem, 5vw, 4rem) 4rem;
     text-align: center;
     position: relative; overflow: hidden;
   }
-  .contact-hero::before {
+  .events-hero::before {
     content: ''; position: absolute; inset: 0; pointer-events: none;
     background: radial-gradient(ellipse 55% 60% at 50% 60%, rgba(201,107,148,0.12) 0%, transparent 65%);
   }
-  .contact-hero .eyebrow {
+  .events-hero .eyebrow {
     font-size: 0.62rem; letter-spacing: 0.35em; text-transform: uppercase;
     color: var(--pink); margin-bottom: 1.25rem; position: relative; z-index: 1;
-    animation: fadeUp 0.7s ease forwards 0.2s; opacity: 0;
   }
-  .contact-hero h1 {
+  .events-hero h1 {
     font-family: 'Cormorant Garamond', serif; font-style: italic;
     font-size: clamp(3rem, 10vw, 6.5rem); font-weight: 300;
     color: var(--pink-light); line-height: 1; margin-bottom: 1.25rem;
     position: relative; z-index: 1;
-    animation: fadeUp 0.9s ease forwards 0.35s; opacity: 0;
   }
-  .contact-hero p {
+  .events-hero p {
     max-width: 480px; margin: 0 auto;
     font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.85;
     color: rgba(250,248,246,0.65);
     position: relative; z-index: 1;
-    animation: fadeUp 0.9s ease forwards 0.5s; opacity: 0;
   }
 
-  /* ── FORM SECTION ────────────────────────── */
-  .form-section {
+  /* ── EVENTS SECTION ───────────────────────── */
+  .events-section {
     background: var(--black);
     padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem);
     flex: 1;
   }
-  .form-inner {
-    max-width: 860px; margin: 0 auto;
+  .events-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.6rem; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--pink);
+    margin-bottom: 0.75rem; display: block;
   }
-  .fillout-wrap {
-    width: 100%;
-    border: 1px solid rgba(240,184,204,0.12);
-    overflow: hidden;
+  .events-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.75rem); font-weight: 300; color: var(--white);
+    margin-bottom: 2.5rem;
   }
+
+  .event-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  .event-card {
+    border: 1px solid rgba(240,184,204,0.14);
+    background: rgba(240,184,204,0.03);
+    padding: 2rem 1.75rem;
+    display: flex; flex-direction: column;
+    transition: border-color 0.3s, background 0.3s;
+    position: relative;
+  }
+  .event-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--pink-deep);
+  }
+  .event-card:hover { border-color: rgba(240,184,204,0.3); background: rgba(240,184,204,0.06); }
+  .event-date {
+    font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--pink); margin-bottom: 0.85rem;
+  }
+  .event-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.35rem, 2.5vw, 1.7rem); font-weight: 400;
+    color: var(--white); margin-bottom: 0.6rem; line-height: 1.25;
+  }
+  .event-location {
+    font-size: 0.78rem; letter-spacing: 0.05em; color: rgba(250,248,246,0.5);
+    margin-bottom: 0.9rem;
+  }
+  .event-description {
+    font-size: 0.87rem; line-height: 1.8; color: rgba(250,248,246,0.6);
+    margin-bottom: 1.25rem; flex: 1;
+  }
+  .event-capacity {
+    font-size: 0.75rem; color: rgba(250,248,246,0.4); margin-bottom: 1rem;
+  }
+  .event-rsvp {
+    align-self: flex-start;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--pink-deep); background: rgba(201,107,148,0.12);
+    color: var(--pink-light); text-decoration: none;
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .event-rsvp:hover { background: rgba(201,107,148,0.25); border-color: var(--pink-light); }
+
+  .empty-state, .load-state {
+    font-size: 0.9rem; color: rgba(250,248,246,0.45); line-height: 1.8;
+    padding: 2rem 0;
+  }
+
+  .past-toggle {
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid rgba(240,184,204,0.1);
+  }
+  .past-toggle button {
+    background: none; border: none; cursor: pointer;
+    color: rgba(250,248,246,0.45); font-family: 'Raleway', sans-serif;
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    padding: 0; transition: color 0.3s;
+  }
+  .past-toggle button:hover { color: var(--pink-light); }
+  .past-list { margin-top: 2rem; display: none; }
+  .past-list.open { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .past-list .event-card { opacity: 0.55; }
+  .past-list .event-card::before { background: rgba(240,184,204,0.2); }
 
   /* ── FOOTER ──────────────────────────────── */
   footer {
@@ -169,17 +237,11 @@
   }
   footer p { font-size: 0.62rem; letter-spacing: 0.14em; color: rgba(250,248,246,0.25); text-transform: uppercase; }
 
-  /* ── ANIMATIONS ───────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── RESPONSIVE ───────────────────────────── */
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .nav-toggle { display: flex; }
     .nav-drawer { display: block; }
+    .event-grid, .past-list.open { grid-template-columns: 1fr; }
     footer { flex-direction: column; text-align: center; }
   }
 </style>
@@ -192,8 +254,7 @@
   <ul class="nav-links">
     <li><a href="index.html#framework">Framework</a></li>
     <li><a href="index.html#who">Who It's For</a></li>
-    <li><a href="index.html#belief">The Belief</a></li>
-    <li><a href="events.html">Events</a></li>
+    <li><a href="events.html" class="active">Events</a></li>
     <li><a href="contact.html">Begin</a></li>
     <li><a href="contact.html" class="nav-join">Join The Audit</a></li>
   </ul>
@@ -206,7 +267,6 @@
   <ul>
     <li><a href="index.html#framework" class="drawer-link">Framework</a></li>
     <li><a href="index.html#who" class="drawer-link">Who It's For</a></li>
-    <li><a href="index.html#belief" class="drawer-link">The Belief</a></li>
     <li><a href="events.html" class="drawer-link">Events</a></li>
     <li><a href="contact.html" class="drawer-link">Begin</a></li>
     <li><a href="contact.html" class="drawer-link drawer-join">Join The Audit</a></li>
@@ -214,18 +274,24 @@
 </div>
 
 <!-- HERO -->
-<div class="contact-hero">
-  <p class="eyebrow">Let's Connect</p>
-  <h1>Join The Audit</h1>
-  <p>Ready to step back with intention? Fill out the form below and we'll be in touch about your next season.</p>
+<div class="events-hero">
+  <p class="eyebrow">Coworking · Community</p>
+  <h1>Events</h1>
+  <p>Coworking sessions, community gatherings, and sessions built for women who are building full lives.</p>
 </div>
 
-<!-- FORM -->
-<section class="form-section">
-  <div class="form-inner">
-    <div class="fillout-wrap">
-      <div style="width:100%;height:500px;" data-fillout-id="6xCkqWDKXBus" data-fillout-embed-type="standard" data-fillout-inherit-parameters data-fillout-dynamic-resize></div>
-      <script src="https://server.fillout.com/embed/v1/"></script>
+<!-- EVENTS -->
+<section class="events-section">
+  <div class="events-inner">
+    <span class="section-label">Upcoming</span>
+    <h2>What's Next</h2>
+    <div id="upcomingGrid" class="event-grid"></div>
+    <div id="upcomingEmpty" class="empty-state" style="display:none;">No upcoming events right now — check back soon.</div>
+    <div id="upcomingLoading" class="load-state">Loading events…</div>
+
+    <div class="past-toggle">
+      <button id="pastToggleBtn" type="button">Show Past Events</button>
+      <div id="pastList" class="past-list"></div>
     </div>
   </div>
 </section>
@@ -268,6 +334,85 @@
       closeDrawer();
     }
   });
+
+  // ── Events
+  const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const timeFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+
+  function formatRange(startIso, endIso) {
+    const start = new Date(startIso);
+    let text = `${dateFmt.format(start)} · ${timeFmt.format(start)}`;
+    if (endIso) {
+      const end = new Date(endIso);
+      text += ` – ${timeFmt.format(end)}`;
+    }
+    return text;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function eventCard(ev) {
+    const rsvp = ev.rsvp_url
+      ? `<a class="event-rsvp" href="${escapeHtml(ev.rsvp_url)}" target="_blank" rel="noopener">RSVP</a>`
+      : '';
+    const capacity = ev.capacity ? `<p class="event-capacity">Limited to ${ev.capacity} spots</p>` : '';
+    return `
+      <div class="event-card">
+        <p class="event-date">${formatRange(ev.start_at, ev.end_at)}</p>
+        <h3>${escapeHtml(ev.title)}</h3>
+        ${ev.location ? `<p class="event-location">${escapeHtml(ev.location)}</p>` : ''}
+        ${ev.description ? `<p class="event-description">${escapeHtml(ev.description)}</p>` : ''}
+        ${capacity}
+        ${rsvp}
+      </div>
+    `;
+  }
+
+  async function loadEvents() {
+    const upcomingGrid = document.getElementById('upcomingGrid');
+    const upcomingEmpty = document.getElementById('upcomingEmpty');
+    const upcomingLoading = document.getElementById('upcomingLoading');
+    const pastList = document.getElementById('pastList');
+    const pastToggleBtn = document.getElementById('pastToggleBtn');
+
+    try {
+      const resp = await fetch('/api/events');
+      if (!resp.ok) throw new Error('Failed to load events');
+      const { events } = await resp.json();
+
+      const now = Date.now();
+      const upcoming = events.filter(ev => new Date(ev.start_at).getTime() >= now);
+      const past = events
+        .filter(ev => new Date(ev.start_at).getTime() < now)
+        .sort((a, b) => new Date(b.start_at) - new Date(a.start_at));
+
+      upcomingLoading.style.display = 'none';
+
+      if (upcoming.length) {
+        upcomingGrid.innerHTML = upcoming.map(eventCard).join('');
+      } else {
+        upcomingEmpty.style.display = 'block';
+      }
+
+      if (past.length) {
+        pastList.innerHTML = past.map(eventCard).join('');
+        pastToggleBtn.addEventListener('click', () => {
+          const open = pastList.classList.toggle('open');
+          pastToggleBtn.textContent = open ? 'Hide Past Events' : 'Show Past Events';
+        });
+      } else {
+        pastToggleBtn.style.display = 'none';
+      }
+    } catch (err) {
+      upcomingLoading.textContent = 'Couldn\'t load events right now. Please try again later.';
+    }
+  }
+
+  loadEvents();
 </script>
 </body>
 </html>

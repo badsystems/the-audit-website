@@ -11,6 +11,8 @@
   ],
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/contact", "destination": "/contact.html" }
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/events", "destination": "/events.html" },
+    { "source": "/admin/events", "destination": "/admin/events.html" }
   ]
 }
