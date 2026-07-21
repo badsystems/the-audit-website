@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Static site for The Audit, with serverless API routes for the Events page.",
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0"
+    "@neondatabase/serverless": "^1.1.0",
+    "stripe": "^22.3.2"
   }
 }

@@ -188,7 +188,28 @@
     transition: transform 0.25s, background 0.25s;
   }
   .cta-btn:hover { transform: translateY(-2px); background: var(--pink-muted); }
+  .cta-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
   .cta-note { margin-top: 1rem; font-size: 0.72rem; opacity: 0.6; }
+
+  /* ── RSVP FORM ────────────────────────────── */
+  .rsvp-box { max-width: 380px; margin: 0 auto; }
+  .rsvp-status { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1.25rem; }
+  .rsvp-form { display: flex; flex-direction: column; gap: 1rem; }
+  .rsvp-field { text-align: left; }
+  .rsvp-field label {
+    display: block; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--ink); opacity: 0.6; margin-bottom: 0.4rem;
+  }
+  .rsvp-field input {
+    width: 100%; padding: 0.85rem 1.1rem; border-radius: 14px;
+    border: 1px solid rgba(51,38,31,0.18); background: var(--cream); color: var(--ink);
+    font-family: 'Raleway', sans-serif; font-size: 0.95rem;
+  }
+  .rsvp-field input:focus { outline: none; border-color: var(--pink-muted); }
+  .rsvp-form .cta-btn { border: none; cursor: pointer; font-family: inherit; margin-top: 0.25rem; }
+  .rsvp-error { color: #8a2f2f; font-size: 0.78rem; min-height: 1em; }
+  .rsvp-note { font-size: 0.9rem; line-height: 1.8; }
+  .rsvp-success p { font-size: 0.95rem; line-height: 1.8; }
 
   /* ── FOOTER ───────────────────────────────── */
   footer {
@@ -433,11 +454,15 @@
           <span class="detail-value tbd">TBD</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Capacity</span>
-          <span class="detail-value tbd">TBD</span>
+          <span class="detail-label">Price</span>
+          <span class="detail-value">$45 CAD</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Spots</span>
+          <span class="detail-value" id="detail-spots">Checking…</span>
         </div>
       </div>
-      <p class="details-note">Details are being finalized — check back soon or reach out below to be notified first.</p>
+      <p class="details-note">Date, time, and location are being finalized once enough people RSVP — your spot is confirmed either way.</p>
     </div>
   </div>
 </section>
@@ -446,9 +471,37 @@
 <section class="cta-band">
   <h2 class="reveal">Come hit some balls badly, eat lunch, and ask the questions you've been sitting on.</h2>
   <p class="reveal">That's the whole event.</p>
-  <!-- RSVP link/form TBD — swap this href for the real RSVP link or embed once it exists. -->
-  <a href="../../contact.html" class="cta-btn reveal">RSVP — Details Coming Soon</a>
-  <p class="cta-note reveal">RSVP link isn't live yet — this button goes to our contact form for now.</p>
+
+  <div class="rsvp-box reveal" id="rsvpBox">
+    <p class="rsvp-status" id="rsvpStatus">Checking spots…</p>
+
+    <form id="rsvpForm" class="rsvp-form" style="display:none;">
+      <div class="rsvp-field">
+        <label for="rsvp-name">Name</label>
+        <input type="text" id="rsvp-name" required autocomplete="name">
+      </div>
+      <div class="rsvp-field">
+        <label for="rsvp-email">Email</label>
+        <input type="email" id="rsvp-email" required autocomplete="email">
+      </div>
+      <button type="submit" class="cta-btn" id="rsvpSubmit">RSVP — $45 CAD</button>
+      <p class="rsvp-error" id="rsvpError"></p>
+    </form>
+
+    <p class="rsvp-note" id="rsvpSoldOut" style="display:none;">
+      This one's full — reach out to <a href="../../contact.html">our contact form</a> and we'll let you know if a spot opens up.
+    </p>
+
+    <div class="rsvp-success" id="rsvpSuccess" style="display:none;">
+      <p>You're in! Check your email for confirmation — we'll follow up with final date, time, and location as soon as they're locked in.</p>
+    </div>
+
+    <p class="rsvp-note" id="rsvpFallback" style="display:none;">
+      Couldn't load live availability. Reach out via <a href="../../contact.html">our contact form</a> if you'd like to come.
+    </p>
+  </div>
+
+  <p class="cta-note" id="rsvpCancelledNote" style="display:none;">Checkout was cancelled — no charge was made. Feel free to try again whenever you're ready.</p>
 </section>
 
 <footer>
@@ -483,6 +536,90 @@
     }, { threshold: 0.5 });
     swapMotifs.forEach(el => swapObserver.observe(el));
   }
+
+  // ── RSVP / Stripe Checkout ──────────────────────────────
+  const EVENT_SLUG = 'pickleball-tech-lunch-learn';
+
+  const rsvpStatus = document.getElementById('rsvpStatus');
+  const rsvpForm = document.getElementById('rsvpForm');
+  const rsvpSoldOut = document.getElementById('rsvpSoldOut');
+  const rsvpSuccess = document.getElementById('rsvpSuccess');
+  const rsvpFallback = document.getElementById('rsvpFallback');
+  const rsvpCancelledNote = document.getElementById('rsvpCancelledNote');
+  const detailSpots = document.getElementById('detail-spots');
+
+  const rsvpParam = new URLSearchParams(window.location.search).get('rsvp');
+
+  async function initRsvp() {
+    if (rsvpParam === 'success') {
+      rsvpStatus.style.display = 'none';
+      rsvpSuccess.style.display = 'block';
+    } else if (rsvpParam === 'cancelled') {
+      rsvpCancelledNote.style.display = 'block';
+    }
+
+    try {
+      const resp = await fetch(`/api/events/${EVENT_SLUG}`);
+      if (!resp.ok) throw new Error('Failed to load event');
+      const data = await resp.json();
+
+      if (detailSpots) {
+        detailSpots.textContent = data.sold_out
+          ? 'Sold out'
+          : (data.spots_left != null ? `${data.spots_left} of ${data.capacity} left` : 'Open');
+      }
+
+      if (rsvpParam === 'success') return;
+
+      if (data.sold_out) {
+        rsvpStatus.style.display = 'none';
+        rsvpSoldOut.style.display = 'block';
+        return;
+      }
+
+      rsvpStatus.textContent = data.spots_left != null
+        ? `${data.spots_left} of ${data.capacity} spots left`
+        : 'Spots open';
+      rsvpForm.style.display = 'flex';
+    } catch (err) {
+      if (rsvpParam !== 'success') {
+        rsvpStatus.style.display = 'none';
+        rsvpFallback.style.display = 'block';
+      }
+      if (detailSpots) detailSpots.textContent = 'Unavailable';
+    }
+  }
+
+  rsvpForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('rsvpSubmit');
+    const errorEl = document.getElementById('rsvpError');
+    errorEl.textContent = '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Redirecting…';
+
+    try {
+      const resp = await fetch(`/api/events/${EVENT_SLUG}/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('rsvp-name').value,
+          email: document.getElementById('rsvp-email').value,
+        }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        throw new Error(data.error || (data.errors && data.errors.join(' ')) || 'Something went wrong.');
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      errorEl.textContent = err.message;
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'RSVP — $45 CAD';
+    }
+  });
+
+  initRsvp();
 </script>
 </body>
 </html>

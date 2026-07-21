@@ -43,10 +43,14 @@ module.exports = async function handler(req, res) {
           image_url = ${clean.image_url},
           rsvp_url = ${clean.rsvp_url},
           capacity = ${clean.capacity},
-          status = ${clean.status}
+          status = ${clean.status},
+          slug = ${clean.slug},
+          price_cents = ${clean.price_cents},
+          currency = ${clean.currency}
         WHERE id = ${id}
         RETURNING id, title, description, location, start_at, end_at,
-                  image_url, rsvp_url, capacity, status, created_at, updated_at
+                  image_url, rsvp_url, capacity, status, slug, price_cents, currency,
+                  created_at, updated_at
       `;
       if (!rows.length) {
         res.status(404).json({ error: 'Event not found' });
@@ -54,6 +58,10 @@ module.exports = async function handler(req, res) {
       }
       res.status(200).json({ event: rows[0] });
     } catch (err) {
+      if (err && err.code === '23505') {
+        res.status(400).json({ errors: ['That slug is already in use by another event.'] });
+        return;
+      }
       console.error(err);
       res.status(500).json({ error: 'Failed to update event' });
     }

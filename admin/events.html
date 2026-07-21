@@ -201,6 +201,16 @@
             </select>
           </div>
         </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="c-slug">Slug (for a custom event page)</label>
+            <input type="text" id="c-slug" placeholder="e.g. pickleball-tech-lunch-learn">
+          </div>
+          <div class="field">
+            <label for="c-price">Price, CAD (leave blank for free/external RSVP)</label>
+            <input type="number" min="0" step="0.01" id="c-price" placeholder="45.00">
+          </div>
+        </div>
         <button type="submit" class="btn">Add Event</button>
         <p class="error-msg" id="createError"></p>
       </form>
@@ -215,12 +225,13 @@
             <th>Title</th>
             <th>Starts</th>
             <th>Location</th>
+            <th>Price</th>
             <th>Status</th>
             <th></th>
           </tr>
         </thead>
         <tbody id="eventsTableBody">
-          <tr class="empty-row"><td colspan="5">Loading…</td></tr>
+          <tr class="empty-row"><td colspan="6">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -276,6 +287,16 @@
             <option value="draft">Draft</option>
             <option value="published">Published</option>
           </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="e-slug">Slug (for a custom event page)</label>
+          <input type="text" id="e-slug" placeholder="e.g. pickleball-tech-lunch-learn">
+        </div>
+        <div class="field">
+          <label for="e-price">Price, CAD (leave blank for free/external RSVP)</label>
+          <input type="number" min="0" step="0.01" id="e-price" placeholder="45.00">
         </div>
       </div>
       <p class="error-msg" id="editError"></p>
@@ -357,11 +378,11 @@
   // ── List
   async function loadEvents() {
     const tbody = document.getElementById('eventsTableBody');
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Loading…</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Loading…</td></tr>';
     try {
       const { events } = await api('/api/admin/events');
       if (!events.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No events yet.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No events yet.</td></tr>';
         return;
       }
       tbody.innerHTML = events.map(ev => `
@@ -369,6 +390,7 @@
           <td>${escapeHtml(ev.title)}</td>
           <td>${new Date(ev.start_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
           <td>${escapeHtml(ev.location)}</td>
+          <td>${ev.price_cents != null ? '$' + (ev.price_cents / 100).toFixed(2) + ' ' + ev.currency.toUpperCase() : '—'}</td>
           <td><span class="status-pill ${ev.status}">${ev.status}</span></td>
           <td>
             <div class="row-actions">
@@ -409,6 +431,7 @@
     e.preventDefault();
     const errorEl = document.getElementById('createError');
     errorEl.textContent = '';
+    const priceDollars = document.getElementById('c-price').value;
     const payload = {
       title: document.getElementById('c-title').value,
       location: document.getElementById('c-location').value,
@@ -419,6 +442,8 @@
       rsvp_url: document.getElementById('c-rsvp').value,
       capacity: document.getElementById('c-capacity').value || null,
       status: document.getElementById('c-status').value,
+      slug: document.getElementById('c-slug').value || null,
+      price_cents: priceDollars ? Math.round(Number(priceDollars) * 100) : null,
     };
     try {
       await api('/api/admin/events', { method: 'POST', body: JSON.stringify(payload) });
@@ -443,6 +468,8 @@
     document.getElementById('e-rsvp').value = ev.rsvp_url || '';
     document.getElementById('e-capacity').value = ev.capacity || '';
     document.getElementById('e-status').value = ev.status;
+    document.getElementById('e-slug').value = ev.slug || '';
+    document.getElementById('e-price').value = ev.price_cents != null ? (ev.price_cents / 100).toFixed(2) : '';
     document.getElementById('editError').textContent = '';
     editBackdrop.classList.add('open');
   }
@@ -456,6 +483,7 @@
     const errorEl = document.getElementById('editError');
     errorEl.textContent = '';
     const id = document.getElementById('e-id').value;
+    const editPriceDollars = document.getElementById('e-price').value;
     const payload = {
       title: document.getElementById('e-title').value,
       location: document.getElementById('e-location').value,
@@ -466,6 +494,8 @@
       rsvp_url: document.getElementById('e-rsvp').value,
       capacity: document.getElementById('e-capacity').value || null,
       status: document.getElementById('e-status').value,
+      slug: document.getElementById('e-slug').value || null,
+      price_cents: editPriceDollars ? Math.round(Number(editPriceDollars) * 100) : null,
     };
     try {
       await api(`/api/admin/events/${id}`, { method: 'PUT', body: JSON.stringify(payload) });

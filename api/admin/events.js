@@ -11,7 +11,8 @@ module.exports = async function handler(req, res) {
     try {
       const rows = await sql`
         SELECT id, title, description, location, start_at, end_at,
-               image_url, rsvp_url, capacity, status, created_at, updated_at
+               image_url, rsvp_url, capacity, status, slug, price_cents, currency,
+               created_at, updated_at
         FROM events
         ORDER BY start_at DESC
       `;
@@ -43,16 +44,22 @@ module.exports = async function handler(req, res) {
     try {
       const rows = await sql`
         INSERT INTO events
-          (title, description, location, start_at, end_at, image_url, rsvp_url, capacity, status)
+          (title, description, location, start_at, end_at, image_url, rsvp_url, capacity, status,
+           slug, price_cents, currency)
         VALUES
           (${clean.title}, ${clean.description}, ${clean.location}, ${clean.start_at.toISOString()},
            ${clean.end_at ? clean.end_at.toISOString() : null}, ${clean.image_url}, ${clean.rsvp_url},
-           ${clean.capacity}, ${clean.status})
+           ${clean.capacity}, ${clean.status}, ${clean.slug}, ${clean.price_cents}, ${clean.currency})
         RETURNING id, title, description, location, start_at, end_at,
-                  image_url, rsvp_url, capacity, status, created_at, updated_at
+                  image_url, rsvp_url, capacity, status, slug, price_cents, currency,
+                  created_at, updated_at
       `;
       res.status(201).json({ event: rows[0] });
     } catch (err) {
+      if (err && err.code === '23505') {
+        res.status(400).json({ errors: ['That slug is already in use by another event.'] });
+        return;
+      }
       console.error(err);
       res.status(500).json({ error: 'Failed to create event' });
     }

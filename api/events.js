@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
     const sql = getSql();
     const rows = await sql`
       SELECT id, title, description, location, start_at, end_at,
-             image_url, rsvp_url, capacity
+             image_url, rsvp_url, capacity, slug, price_cents, currency
       FROM events
       WHERE status = 'published'
       ORDER BY start_at ASC
